@@ -1,3 +1,3 @@
 # E-HEALTH MONITOR
 
-![Logo do Markdown](templates/static/autenticacao/img/e_health_monitor.jpg)
+<img src="templates/static/autenticacao/img/e_health_monitor.jpg" alt="logo-e-health" width="200"/>
