@@ -1,5 +1,5 @@
 .sidebar{
-    background-color: #27DB8F;
+    background-color: #03355a;
     height: 100vh;
 }
 
@@ -9,6 +9,7 @@
 }
 
 .img_logo_sidebar{
+    margin-top: 30px;
     width: 100%;
  
 
@@ -46,7 +47,7 @@
 
 .input-form:focus{
 
-    border: 2px solid #27DB8F !important;
+    border: 2px solid #03355a !important;
     outline: 0 !important;
     box-shadow: none !important;
 
@@ -61,7 +62,7 @@
     border: none;
     padding: 5px 15px 5px 15px;
     font-size: 25px;
-    background-color: #27DB8F;
+    background-color: #03355a;
     color: white;
     font-weight: bold;
 
