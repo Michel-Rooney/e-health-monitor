@@ -16,29 +16,35 @@
         
         <br>
         <br>
-        <div  class="row">
-            
+
+        <div class='row'>
             {% for paciente in pacientes %}
-                <div class="col-md-4">
-                    <a href="#" class="link-hover">
-                        <div class="card-paciente">
-                            <div class="foto-perfil">
-                                {% if paciente.sexo == 'M' %}
-                                    <img src="{% static 'e_health/img/perfil2.png' %}">
-                                {% else %}
-                                    <img src="{% static 'e_health/img/perfil1.png' %}">
-                                {% endif %}
+            <div class="col-md-4">
+                <div class="card" style="width: 18rem; background-color: #EAEAEA; min-height: 305px; max-height: 305px;">
+                    <div>
+                        {% if paciente.sexo == 'M' %}
+                            <img class="foto-perfil" src="{% static 'e_health/img/perfil2.png' %}">
+                        {% else %}
+                            <img class="foto-perfil" src="{% static 'e_health/img/perfil1.png' %}">
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ paciente.nome }}</h5> 
+                        <div>
+                            <div class="side-by-side">
+                                <a class="button side-by-side-button" href="{% url 'dados_paciente' paciente.id %}">DADOS</a>
                             </div>
-                            <br>
-                            <p class="dados">{{ paciente.nome }}</p>
-                            <p class="dados">{{ paciente.idade }} Anos</p>
+                            <div class="side-by-side">
+                                <a class="button side-by-side-button" href="{% url 'plano_alimentar' paciente.id %}">PLANO ALIMENTAR</a>
+                            </div>
                         </div>
-                    </a>
-                    <br>
+                    </div>
                 </div>
+                <br>
+            </div>
             {% endfor %}
         </div>
-
+            
 
         <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">

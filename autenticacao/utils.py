@@ -45,7 +45,6 @@ def password_is_valid(request, password, confirm_password):
     elif not re.search('[0-9]', password):
         messages.error(request, 'A senha precisa conter números')
         return False
-
     return True
 
         
