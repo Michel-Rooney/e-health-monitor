@@ -11,6 +11,7 @@ class Pacientes(models.Model):
     email = models.EmailField()
     telefone = models.CharField(max_length=19)
     medico = models.ForeignKey(User, on_delete=models.CASCADE)
+    foto_perfil = models.ImageField(blank=True, null=True, upload_to=f'pacientes/')
 
     def __str__(self):
         return self.nome

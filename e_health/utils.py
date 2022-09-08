@@ -7,6 +7,12 @@ def empty_field(request, nome, sexo, idade, email, telefone):
         return True
     return False
 
+def name_is_valid(request, nome):
+    if len(nome) > 50:
+        messages.error(request, 'O nome so pode ter no máximo 50 caracteres')
+        return False
+    return True
+
 def idade_is_valid(request, idade):
     if not idade.isnumeric():
         messages.error(request, 'Digite uma idade válida')

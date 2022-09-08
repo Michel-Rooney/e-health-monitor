@@ -12,7 +12,13 @@
     {% endif %}
 
     <br>
-        <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#modal">Novo paciente</button>
+        <div>
+            <div class="side-by-side">
+                <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#modal">Novo paciente</button>
+            </div>
+            <div class="side-by-side">
+                <a type="button" class="btn btn-outline-success" href="#" >Novo Médico</a>
+        </div>
         
         <br>
         <br>
@@ -22,10 +28,14 @@
             <div class="col-md-4">
                 <div class="card" style="width: 18rem; background-color: #EAEAEA; min-height: 305px; max-height: 305px;">
                     <div>
-                        {% if paciente.sexo == 'M' %}
-                            <img class="foto-perfil" src="{% static 'e_health/img/perfil2.png' %}">
+                        {% if paciente.foto_perfil == '' %}
+                            {% if paciente.sexo == 'M' %}
+                                <img class="foto-perfil" src="{% static 'e_health/img/perfil2.png' %}">
+                            {% else %}
+                                <img class="foto-perfil" src="{% static 'e_health/img/perfil1.png' %}">
+                            {% endif %}
                         {% else %}
-                            <img class="foto-perfil" src="{% static 'e_health/img/perfil1.png' %}">
+                            <img class="foto-perfil" src="{{ paciente.foto_perfil.url }}">
                         {% endif %}
                     </div>
                     <div class="card-body">
@@ -57,21 +67,24 @@
                 </div>
                 
                 <div class="modal-body">
-                    <form action="{% url 'pacientes' %}" method="POST">{% csrf_token %}
-
+                    <form action="{% url 'pacientes' %}" method="POST" enctype='multipart-form-data'>{% csrf_token %}
 
                         <div class="row">
 
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <img src="{% static 'e_health/img/perfil2.png' %}">
                             </div>
 
-                            <div class="col-md-9">
-                                <label>Nome:</label>
-                                <input type="text" placeholder="Digite o nome do paciente..." class="form-control" name="nome">
+                            <div>
+                                <input type="file" name="foto-perfil" accept="image/* " style="width: 100%;"></input>
                             </div>
 
                         </div>
+                        
+                        <br>
+                        <label>Nome:</label>
+                        <input type="text" placeholder="Digite o nome do paciente..." class="form-control" name="nome">
+
 
                         <br>
                         <label>Sexo:</label>

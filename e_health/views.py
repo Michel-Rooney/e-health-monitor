@@ -1,3 +1,4 @@
+from email.policy import default
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
@@ -14,13 +15,21 @@ def pacientes(request):
         pacientes = Pacientes.objects.filter(medico=request.user)
         return render(request, 'pacientes.html', {'pacientes': pacientes})
     elif request.method == 'POST':
+        
         nome = request.POST['nome']
         sexo = request.POST['sexo']
         idade = request.POST['idade']
         email = request.POST['email']
         telefone = request.POST['telefone']
+        try:
+            foto_perfil = request.FILES['foto-perfil']
+        except:
+            foto_perfil = None
 
         if empty_field(request, nome, sexo, idade, email, telefone):
+            return redirect('/pacientes')
+
+        if not name_is_valid(request, nome):
             return redirect('/pacientes')
 
         if not idade_is_valid(request, idade):
@@ -31,7 +40,7 @@ def pacientes(request):
 
         try:
             paciente = Pacientes(nome=nome, sexo=sexo, idade=idade, email=email, 
-                                telefone=telefone, medico=request.user)
+                                telefone=telefone, medico=request.user, foto_perfil=foto_perfil)
             paciente.save()
             messages.success(request, 'Paciente cadastrado com sucesso')
             return redirect('/pacientes')
@@ -74,10 +83,10 @@ def dados_paciente(request, id):
 
             paciente.save()
             messages.success(request, 'Dados cadastrados com sucesso')
-            return redirect('/dados_paciente/')
+            return redirect('/pacientes/')
         except:
             messages.error(request, 'Não foi possivel cadastrar os dados')
-            return redirect('/dados_paciente/')
+            return redirect('/pacientes/')
 
 @login_required(login_url='/auth/logar/')
 @csrf_exempt
