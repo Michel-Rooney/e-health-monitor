@@ -67,7 +67,7 @@
                 </div>
                 
                 <div class="modal-body">
-                    <form action="{% url 'pacientes' %}" method="POST" enctype='multipart-form-data'>{% csrf_token %}
+                    <form action="{% url 'pacientes' %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
 
                         <div class="row">
 
@@ -75,9 +75,7 @@
                                 <img src="{% static 'e_health/img/perfil2.png' %}">
                             </div>
 
-                            <div>
-                                <input type="file" name="foto-perfil" accept="image/* " style="width: 100%;"></input>
-                            </div>
+                            <input type="file" name="foto-perfil"/>
 
                         </div>
                         

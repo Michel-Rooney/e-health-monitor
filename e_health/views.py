@@ -25,6 +25,8 @@ def pacientes(request):
         except:
             foto_perfil = None
 
+        print(foto_perfil)
+
         if empty_field(request, nome, sexo, idade, email, telefone):
             return redirect('/pacientes')
 
