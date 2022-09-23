@@ -60,6 +60,7 @@
 .btn-first{
 
     border: none;
+    border-radius: 5px;
     padding: 5px 15px 5px 15px;
     font-size: 25px;
     background-color: #03355a;
