@@ -48,12 +48,6 @@ def pacientes(request):
             return redirect('/pacientes')
 
 @login_required(login_url='/auth/logar')
-def dados_paciente_listar(request):
-    if request.method == 'GET':
-        pacientes = Pacientes.objects.filter(medico=request.user)
-        return render(request, 'dados_paciente_listar.html', {'pacientes':pacientes})
-
-@login_required(login_url='/auth/logar')
 def dados_paciente(request, id):
     paciente = get_object_or_404(Pacientes, id=id)
     if not paciente.medico == request.user:
