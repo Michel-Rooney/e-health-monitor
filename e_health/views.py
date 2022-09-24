@@ -7,10 +7,35 @@ from .models import Pacientes, DadosPaciente
 from .utils import *
 from datetime import datetime
 
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.conf import settings
+
 
 def index(request):
-    return render(request, 'index.html')
+    if request.method == 'GET':
+        return render(request, 'index.html')
+    elif request.method == 'POST':
+        nome = request.POST['nome']
+        email = request.POST['email']
+        numero = request.POST['numero']
+        mensagem = request.POST['mensagem']
 
+        print(nome)
+        print(email)
+
+        html_content = render_to_string('emails/contate_me.html', {
+            'nome' : nome, 'email': email, 'numero': numero, 'mensagem': mensagem 
+        })
+        text_content = strip_tags(html_content)
+
+        email = EmailMultiAlternatives('Contate-me', text_content, settings.EMAIL_HOST_USER, ['michelrooney16@gmail.com',])
+        email.attach_alternative(html_content, 'text/html')
+        email.send()
+
+        messages.success(request, 'Conta-me enviando com sucesso')
+        return redirect('/')
 
 @login_required(login_url='/auth/logar')
 def pacientes(request):
