@@ -8,6 +8,10 @@ from .utils import *
 from datetime import datetime
 
 
+def index(request):
+    return render(request, 'index.html')
+
+
 @login_required(login_url='/auth/logar')
 def pacientes(request):
     if request.method == 'GET':
