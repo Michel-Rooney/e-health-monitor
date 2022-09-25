@@ -18,9 +18,9 @@
         <div class="col-md-3">
             {% if paciente.foto_perfil == '' %}
                 {% if paciente.sexo == 'M' %}
-                    <img class="foto-perfil" src="{% static 'e_health/img/perfil2.png' %}">
+                    <img class="foto-perfil-solo" src="{% static 'e_health/img/perfil2.png' %}">
                 {% else %}
-                    <img class="foto-perfil" src="{% static 'e_health/img/perfil1.png' %}">
+                    <img class="foto-perfil-solo" src="{% static 'e_health/img/perfil1.png' %}">
                 {% endif %}
             {% else %}
                 <img class="foto-perfil-solo" src="{{ paciente.foto_perfil.url }}">
@@ -103,6 +103,7 @@
         })
     
     </script>
+    <br><br><br>
 
 
 
