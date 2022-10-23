@@ -90,7 +90,7 @@ def pacientes(request):
 def dados_paciente(request, id):
     user = get_object_or_404(Usuario, id=id)
     paciente = Pacientes.objects.get(usuario=user)
-    usuarios = Usuario.objects.filter(nivel = 'P')
+    usuarios = Usuario.objects.filter(nivel='P')
     # if not paciente.medico == request.user:
     #     messages.error(request, 'Esse paciente não é seu')
     #     return redirect('/dados_paciente/')
@@ -190,7 +190,8 @@ def torna_medico(request):
         user.nivel = 'M'
         user.save()
         messages.success(request, 'Agora o paciente selecionado é médico')
-        return redirect(f'/dados_paciente/{user.id}')
+        u = Usuario.objects.get(user=request.user.id)
+        return redirect(f'/dados_paciente/{u.id}')
     except:
         messages.error(request, 'Não foi possivel torna esse paciente um médico ')
-        return redirect(f'/dados_paciente/{user.id}')
+        return redirect(f'/dados_paciente/{u.id}')

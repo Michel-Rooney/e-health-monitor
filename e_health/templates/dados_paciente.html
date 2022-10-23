@@ -64,10 +64,12 @@
     <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#modal">
         Adicionar dados do paciente
     </button>
-    {% if   paciente.usuario.nivel == 'A' %}
+    {% if paciente.usuario.nivel == 'A' %}
         <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#modal-paciente">
             Cadastrar Médico
         </button>
+    {% elif paciente.usuario.nivel == 'M' or paciente.usuario.nivel == 'A' %}
+        <a href="{% url 'pacientes' %}"><button type="button" class="btn btn-outline-success">Pacientes</button></a>
     {% endif %}
     <br>
     <br>
@@ -295,7 +297,7 @@
                                 <label for="validationServerUsername">Pacientes</label>
                                 <select name="usuarios" class="form-control">
                                     {% for usr in usuarios %}
-                                        <option value="{{usr.id}}">{{usr.user}}</option>
+                                        <option value="{{usr.user.id}}">{{usr.user}}</option>
                                     {% endfor %}
                                 </select>             
                             </div>                      
