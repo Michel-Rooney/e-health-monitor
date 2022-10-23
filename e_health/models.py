@@ -1,8 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
+from autenticacao.models import Usuario
 
 
 class Pacientes(models.Model):
+    usuario = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True)
     choices_sexo = (('F', 'Feminino'),
                     ('M', 'Maculino'))
     nome = models.CharField(max_length=50)
@@ -10,7 +12,7 @@ class Pacientes(models.Model):
     idade = models.IntegerField()
     email = models.EmailField()
     telefone = models.CharField(max_length=19)
-    medico = models.ForeignKey(User, on_delete=models.CASCADE)
+    medico = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     foto_perfil = models.FileField(blank=True, null=True, upload_to='pacientes/')
 
     def __str__(self):

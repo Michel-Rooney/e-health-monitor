@@ -9,10 +9,11 @@
 {% endblock %}
 
 {% block 'body' %}
+    {% block 'nav' %}{% endblock %}
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-2">
-                <a href="{% url 'pacientes' %}" class="link-lateral">
+                <!-- <a href="{% url 'pacientes' %}" class="link-lateral">
                     <div class="card-lateral">
                         <img src="{% static 'e_health/img/paciente.png' %}">
                         <br>
@@ -20,7 +21,7 @@
                   
                         <h3>Pacientes</h3>
                     </div>
-                  </a>                  
+                  </a>                   -->
                   <!-- <a href="#" class="link-lateral">
                     <div class="card-lateral">
                         <img src="{% static 'e_health/img/dados_paciente.png' %}">

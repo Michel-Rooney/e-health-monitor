@@ -1,17 +1,18 @@
 from django.contrib import messages
 from .models import Pacientes
 
-def empty_field(request, nome, sexo, idade, email, telefone):
-    if (len(nome.strip()) == 0) or (len(sexo.strip()) == 0) or (len(idade.strip()) == 0) or (len(email.strip()) == 0) or (len(telefone.strip()) == 0):
+def empty_field(request, sexo, idade, telefone):
+    # if (len(nome.strip()) == 0) or (len(sexo.strip()) == 0) or (len(idade.strip()) == 0) or (len(email.strip()) == 0) or (len(telefone.strip()) == 0):
+    if (len(sexo.strip()) == 0) or (len(idade.strip()) == 0) or (len(telefone.strip()) == 0):
         messages.error(request, 'Preencha todos os campos')
         return True
     return False
 
-def name_is_valid(request, nome):
-    if len(nome) > 50:
-        messages.error(request, 'O nome so pode ter no máximo 50 caracteres')
-        return False
-    return True
+# def name_is_valid(request, nome):
+#     if len(nome) > 50:
+#         messages.error(request, 'O nome so pode ter no máximo 50 caracteres')
+#         return False
+#     return True
 
 def idade_is_valid(request, idade):
     if not idade.isnumeric():
@@ -22,9 +23,9 @@ def idade_is_valid(request, idade):
         return False
     return True
 
-def paciente_exist(request, email):
-    paciente = Pacientes.objects.filter(email=email)
-    if paciente.exists():
-        messages.error(request, 'Já existe um paciente com esse E-mail')
-        return True
-    return False
+# def paciente_exist(request, email):
+#     paciente = Pacientes.objects.filter(email=email)
+#     if paciente.exists():
+#         messages.error(request, 'Já existe um paciente com esse E-mail')
+#         return True
+#     return False

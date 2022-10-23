@@ -1,6 +1,31 @@
 {% extends 'base_plataforma.html' %}
 {% load static %}
 
+
+{% block 'nav' %}
+<nav class="navbar navbar-expand-lg bg-secondary text-uppercase" id="mainNav">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'index' %}">E-HEALTH MONITOR</a>
+        <button class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            Menu
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ms-auto">
+                {% if user.is_authenticated %}
+                    {% if nivel == 'M' %}
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'pacientes' %}">Pacientes</a></li>
+                    {% endif %}
+                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'sair' %}">Sair</a></li>
+                {% else %}
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+
 {% block 'plataforma' %}
 
     {% if messages %}
@@ -39,6 +64,11 @@
     <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#modal">
         Adicionar dados do paciente
     </button>
+    {% if   paciente.usuario.nivel == 'A' %}
+        <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#modal-paciente">
+            Cadastrar Médico
+        </button>
+    {% endif %}
     <br>
     <br>
     <table class="table table-striped">
@@ -119,7 +149,7 @@
                 </div>
                 
                 <div class="modal-body">
-                    <form action="{% url 'dados_paciente' paciente.id %}" method="POST">{% csrf_token %}
+                    <form action="{% url 'dados_paciente' paciente.usuario.id %}" method="POST">{% csrf_token %}
                         <h4 class="titulo">Dados do paciente</h4>
                         <div class="form-row">
                             <div class='col-md'>
@@ -246,5 +276,36 @@
     </div>
     
 
+
+    <div class="modal fade" id="modal-paciente" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                
+                <div class="modal-body">
+                    <form action="{% url 'torna_medico' %}" method="POST">{% csrf_token %}
+                        <h4 class="titulo">Cadastrar Médico</h4>
+                        <div class="form-row">
+                            <div class='col-md'>
+                                <label for="validationServerUsername">Pacientes</label>
+                                <select name="usuarios" class="form-control">
+                                    {% for usr in usuarios %}
+                                        <option value="{{usr.id}}">{{usr.user}}</option>
+                                    {% endfor %}
+                                </select>             
+                            </div>                      
+                        </div>
+                        <br>
+                        <input type="submit" value="Torna-lo médico" class="btn btn-success">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
         
 {% endblock%}

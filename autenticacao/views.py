@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import auth, messages
-from django.contrib.auth.models import User
+from .models import Usuario
 from .utils import *
 
 def cadastro(request):
@@ -25,13 +25,16 @@ def cadastro(request):
         try:
             user = User.objects.create_user(username=username, email=email,
                                             password=password)
+
             user.save()
+            user_id = User.objects.get(email=email)
+            usuario = Usuario.objects.create(user=user_id, nivel='P')
+            usuario.save()
             messages.success(request, 'Usuário cadastrado com sucesso')
-            return redirect('/auth/logar')
+            return redirect(f'/auth/logar')
         except:
             messages.error(request, 'Error interno do sistema')
             return redirect('/auth/cadastro')
-
 
 def logar(request):
     if request.method == 'GET':
@@ -46,7 +49,7 @@ def logar(request):
         user = auth.authenticate(username=username, password=password)
         if user:
             auth.login(request, user)
-            return redirect('/')
+            return redirect('/cadastro_info')
         else:
             messages.error(request, 'Usuário ou seja inválidos')
             return redirect('/auth/logar')
