@@ -2,6 +2,24 @@
 {% load static  %}
 
 
+{% block 'nav' %}
+<nav class="navbar navbar-expand-lg bg-secondary text-uppercase" id="mainNav">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'index' %}">E-HEALTH MONITOR</a>
+        <button class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            Menu
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'dados_paciente' user.id   %}">Perfil</a></li>
+                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'sair' %}">Sair</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
 {% block 'plataforma' %}
     {% if messages %}
             <br>
@@ -26,7 +44,7 @@
         <br>
 
         <div class='row'>
-            {% for paciente in pacientes %}
+            {% for paciente in pacientes_user %}
             <div class="col-md-4">
                 <div class="card" style="width: 18rem; background-color: #EAEAEA; min-height: 305px; max-height: 305px;">
                     <div>
@@ -44,7 +62,7 @@
                         <h5 class="card-title">{{ paciente.nome }}</h5> 
                         <div>
                             <div class="side-by-side">
-                                <a class="button side-by-side-button" href="{% url 'dados_paciente' paciente.id %}">DADOS</a>
+                                <a class="button side-by-side-button" href="{% url 'dados_paciente' paciente.usuario.id %}">DADOS</a>
                             </div>
                             <!-- <div class="side-by-side">
                                 <a class="button side-by-side-button" href="#">PLANO ALIMENTAR</a>
@@ -70,43 +88,13 @@
                 
                 <div class="modal-body">
                     <form action="{% url 'pacientes' %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
-
-                        <div class="row">
-
-                            <div class="col-md-4">
-                                <img src="{% static 'e_health/img/perfil2.png' %}">
-                            </div>
-
-                            <input type="file" name="foto-perfil"/>
-
-                        </div>
-                        
                         <br>
-                        <label>Nome:</label>
-                        <input type="text" placeholder="Digite o nome do paciente..." class="form-control" name="nome">
-
-
-                        <br>
-                        <label>Sexo:</label>
-                        <select name="sexo" class="form-control">
-                            <option value="M">Masculino</option>
-                            <option value="F">Feminino</option>
-                        </select>
-
-                        <br>
-
-                        <label>Idade:</label>
-                        <input type="number" placeholder="0" class="form-control" name="idade">
-                        
-                        <br>
-                        
-                        <label>E-mail:</label>
-                        <input type="email" placeholder="exemple@email.com" class="form-control" name="email">   
-
-                        <br>
-                        
-                        <label>Telefone:</label>
-                        <input type="text" placeholder="+55 (00) 00000-0000" class="form-control" name="telefone">
+                        <label>Adicione um novo paciente</label>
+                        <select name="paciente" class="form-control">
+                            {% for pac in pacientes %}
+                                <option value="{{pac.usuario.id}}">{{ pac.usuario }}</option>
+                            {% endfor %}
+                            </select>
                         <br>
                         <input type="submit" class="btn btn-success btn-lg" value="Registar">
                     

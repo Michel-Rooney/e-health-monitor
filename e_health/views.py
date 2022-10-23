@@ -48,60 +48,61 @@ def pacientes(request):
             messages.warning(request, 'Você não tem permisão para acessar essa pagina')
             return redirect(f'/dados_paciente/{request.user.id}')
         else:
-            pacientes = Pacientes.objects.filter(medico=request.user)
-            return render(request, 'pacientes.html', {'pacientes': pacientes})
+            # pacs = Pacientes.objects.filter(medico=None)
+            # pacientes = Pacientes.objects.filter(medico=request.user)
+
+            pacientes_user = Pacientes.objects.filter(medico=user.id).exclude(usuario=user)
+            pacientes = Pacientes.objects.filter(medico=None).exclude(usuario=user)
+
+            return render(request, 'pacientes.html', {'user':user, 'pacientes_user':pacientes_user, 'pacientes':pacientes})
     elif request.method == 'POST':
-        
-        nome = request.POST['nome']
-        sexo = request.POST['sexo']
-        idade = request.POST['idade']
-        email = request.POST['email']
-        telefone = request.POST['telefone']
-        try:
-            foto_perfil = request.FILES['foto-perfil']
-        except:
-            foto_perfil = None
-
-        print(foto_perfil)
-
-        if empty_field(request, nome, sexo, idade, email, telefone):
-            return redirect('/pacientes')
-
-        if not name_is_valid(request, nome):
-            return redirect('/pacientes')
-
-        if not idade_is_valid(request, idade):
-            return redirect('/pacientes')
-            
-        if paciente_exist(request, email):
-            return redirect('/pacientes')
+        pac = request.POST['paciente']
 
         try:
-            paciente = Pacientes(nome=nome, sexo=sexo, idade=idade, email=email, 
-                                telefone=telefone, medico=request.user, foto_perfil=foto_perfil)
+            paciente = Pacientes.objects.get(usuario=pac)
+            paciente.medico = request.user
             paciente.save()
-            messages.success(request, 'Paciente cadastrado com sucesso')
-            return redirect('/pacientes')
+            messages.success(request, 'Paciente agora está sendo monitorado')
+            return redirect(f'/pacientes')
         except:
-            messages.error(request, 'Erro interno do sistema')
-            return redirect('/pacientes')
+            messages.error(request, 'Não foi possivel monitorar esse paciente')
+            return redirect(f'/pacientes')
 
 @login_required(login_url='/auth/logar')
 def dados_paciente(request, id):
-    user = get_object_or_404(Usuario, id=id)
-    paciente = Pacientes.objects.get(usuario=user)
-    usuarios = Usuario.objects.filter(nivel='P')
+    # user = get_object_or_404(Usuario, id=id)
+    # paciente = Pacientes.objects.get(usuario=user)
+    # usuarios = Usuario.objects.filter(nivel='P')
     # if not paciente.medico == request.user:
     #     messages.error(request, 'Esse paciente não é seu')
     #     return redirect('/dados_paciente/')
 
-    if request.user.email != user.user.email:
-        messages.error(request, 'Você não tem permisão para acessar essa pagina')
-        return redirect(f'/')
+    # usr = Usuario.objects.get(user=request.user)
+    # pac = Pacientes.objects.get(usuario=id)
+
+    # print(f'01 {request.user.username}')
+    # print(f'02 {pac.medico}')
+
+    # print(usr)
+    # print(pac)
+
+    user = Usuario.objects.get(user=request.user.id)
+    paciente_user = Usuario.objects.get(id=id)
+    paciente = Pacientes.objects.get(usuario=paciente_user)
+    dados_paciente = DadosPaciente.objects.filter(paciente=paciente.id)
+    all_pacientes = Pacientes.objects.all().exclude(usuario=user.id)
+
+    print(user)
+    print(paciente.medico)
 
     if request.method == 'GET':
-        dados_paciente = DadosPaciente.objects.filter(paciente=paciente)
-        return render(request, 'dados_paciente.html', {'usuarios':usuarios, 'paciente':paciente, 'dados_paciente':dados_paciente})
+        if user.id == paciente.usuario.id:
+            return render(request, 'dados_paciente.html', {'user':user, 'paciente':paciente, 'dados_paciente':dados_paciente, 'all_pacientes':all_pacientes})
+        elif str(user) != str(paciente.medico):
+            messages.error(request, 'Você não tem permissão para acessar está página')
+            return redirect(f'/pacientes')
+        return render(request, 'dados_paciente.html', {'user':user, 'paciente':paciente, 'dados_paciente':dados_paciente, 'all_pacientes':all_pacientes})
+
     elif request.method == 'POST':
         peso = request.POST['peso']
         altura = request.POST['altura']
@@ -114,17 +115,17 @@ def dados_paciente(request, id):
         trigliceridios = request.POST['triglicerídios']
 
         try:
-            paciente2 = DadosPaciente(paciente=paciente, data=datetime.now(), peso=peso,
+            dados = DadosPaciente(paciente=paciente, data=datetime.now(), peso=peso,
                                     altura=altura, percentual_gordura=gordura, percentual_musculo=musculo,
                                     colesterol_hdl=hdl, colesterol_ldl=ldl, colesterol_total=colesterol_total,
                                     trigliceridios=trigliceridios)
 
-            paciente2.save()
+            dados.save()
             messages.success(request, 'Dados cadastrados com sucesso')
-            return redirect(f'/dados_paciente/{user.id}')   
+            return redirect(f'/dados_paciente/{paciente.usuario.id}')   
         except:
             messages.error(request, 'Não foi possivel cadastrar os dados')
-            return redirect(f'/dados_paciente/{user.id}')
+            return redirect(f'/dados_paciente/{paciente.usuario.id}')
 
 @login_required(login_url='/auth/logar/')
 @csrf_exempt
@@ -195,3 +196,10 @@ def torna_medico(request):
     except:
         messages.error(request, 'Não foi possivel torna esse paciente um médico ')
         return redirect(f'/dados_paciente/{u.id}')
+
+
+def cancelar_monitoriamento(request, id):
+    paciente = Pacientes.objects.get(id=id)
+    paciente.medico = None
+    paciente.save()
+    return redirect('/pacientes')

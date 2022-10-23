@@ -12,13 +12,14 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ms-auto">
-                {% if user.is_authenticated %}
-                    {% if nivel == 'M' %}
-                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'pacientes' %}">Pacientes</a></li>
+                {% if user.nivel == 'M' or user.nivel == 'A' %}
+                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'pacientes' %}">Pacientes</a></li>
+                    {% if user.id != paciente.usuario.id %}
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'dados_paciente' user.id %}">Perfil</a></li>
                     {% endif %}
-                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'sair' %}">Sair</a></li>
                 {% else %}
                 {% endif %}
+                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'sair' %}">Sair</a></li>
             </ul>
         </div>
     </div>
@@ -27,7 +28,6 @@
 
 
 {% block 'plataforma' %}
-
     {% if messages %}
         <br>
         {% for message in messages %}
@@ -37,9 +37,7 @@
         {% endfor %}
     {% endif %}
     <br>
-
     <div class="row">
-
         <div class="col-md-3">
             {% if paciente.foto_perfil == '' %}
                 {% if paciente.sexo == 'M' %}
@@ -61,15 +59,16 @@
     <hr>
 
 
-    <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#modal">
-        Adicionar dados do paciente
-    </button>
-    {% if paciente.usuario.nivel == 'A' %}
-        <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#modal-paciente">
-            Cadastrar Médico
-        </button>
-    {% elif paciente.usuario.nivel == 'M' or paciente.usuario.nivel == 'A' %}
-        <a href="{% url 'pacientes' %}"><button type="button" class="btn btn-outline-success">Pacientes</button></a>
+    <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#modal">Adicionar dados do paciente</button>
+    {% if user.nivel == 'A'%}
+        {% if user.id == paciente.usuario.id %}
+            <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#modal-paciente">Cadastrar Médico</button>
+        {% endif %}
+    {% endif %}
+    {% if user.nivel == 'M' or user.nivel == 'A' %}
+        {% if user.id != paciente.usuario.id %}
+            <a href="{% url 'cancelar_monitoriamento' paciente.id %}"><button type="button" class="btn btn-outline-danger">Cancelar Monitoriamento</button></a>
+        {% endif %}
     {% endif %}
     <br>
     <br>
@@ -234,7 +233,6 @@
                                     </div>
                                                             
                             </div>
-
                             
                         </div>
                         <br>
@@ -288,7 +286,6 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                
                 <div class="modal-body">
                     <form action="{% url 'torna_medico' %}" method="POST">{% csrf_token %}
                         <h4 class="titulo">Cadastrar Médico</h4>
@@ -296,8 +293,8 @@
                             <div class='col-md'>
                                 <label for="validationServerUsername">Pacientes</label>
                                 <select name="usuarios" class="form-control">
-                                    {% for usr in usuarios %}
-                                        <option value="{{usr.user.id}}">{{usr.user}}</option>
+                                    {% for pac in all_pacientes %}
+                                        <option value="{{pac.usuario.id}}">{{pac.usuario.user}}</option>
                                     {% endfor %}
                                 </select>             
                             </div>                      
@@ -309,5 +306,4 @@
             </div>
         </div>
     </div>
-        
 {% endblock%}
